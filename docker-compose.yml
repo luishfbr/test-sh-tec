@@ -42,10 +42,12 @@ services:
       context: ./client
       dockerfile: Dockerfile
     container_name: client
+    restart: always
     ports:
-      - "80:80"
+      - 80:80
     volumes:
       - ./client:/app
+      - /app/node_modules
     networks:
       - db
 
