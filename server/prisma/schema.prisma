@@ -1,0 +1,46 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+  binaryTargets   = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Ride {
+  id          String   @id @default(uuid())
+  customer_id String
+  date        DateTime @default(now())
+  origin      String
+  destination String
+  distance    Int
+  duration    String
+  driver      Driver   @relation(fields: [driverId], references: [id])
+  driverId    Int
+  value       Float
+}
+
+model Driver {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  vehicle     String
+  review      Review[]
+  value       Float
+  minKM       Int
+  Ride        Ride[]
+}
+
+model Review {
+  id      String @id @default(uuid())
+  rating  Int
+  comment String
+
+  Driver   Driver? @relation(fields: [driverId], references: [id], onDelete: Cascade)
+  driverId Int?
+}
